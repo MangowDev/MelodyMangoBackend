@@ -52,6 +52,18 @@ public class UsersController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173/")
+    @GetMapping("/search/{username}")
+    public ResponseEntity<List<UsersEntity>> searchUsersByUsername(@PathVariable("username") String username) {
+        List<UsersEntity> users = usersRepository.findByUsernameContaining(username);
+
+        if (!users.isEmpty()) {
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173/")
     @PostMapping
     public ResponseEntity<UsersEntity> createUser(@RequestBody UsersEntity user) {
         try {
