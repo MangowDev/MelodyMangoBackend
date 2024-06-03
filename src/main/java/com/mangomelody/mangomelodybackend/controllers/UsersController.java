@@ -28,7 +28,7 @@ public class UsersController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173/")
-    @GetMapping("/id/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<UsersEntity> getUserById(@PathVariable("userId") int userId) {
         Optional<UsersEntity> userData = usersRepository.findById(userId);
 

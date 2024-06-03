@@ -54,7 +54,7 @@ public class FriendshipsEntity {
         this.user2 = user2;
     }
 
-    public Object getStatus() {
+    public FriendshipStatus getStatus() {
         return status;
     }
 

@@ -1,7 +1,10 @@
 package com.mangomelody.mangomelodybackend.controllers;
 
+import com.mangomelody.mangomelodybackend.model.dtos.SpotifyDataDto;
 import com.mangomelody.mangomelodybackend.model.entities.SpotifyDataEntity;
+import com.mangomelody.mangomelodybackend.model.entities.UsersEntity;
 import com.mangomelody.mangomelodybackend.model.repositories.SpotifyDataRepository;
+import com.mangomelody.mangomelodybackend.model.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,9 @@ public class SpotifyDataController {
 
     @Autowired
     private SpotifyDataRepository spotifyDataRepository;
+
+    @Autowired
+    private UsersRepository usersRepository;
 
     @CrossOrigin(origins = "http://localhost:5173/")
     @GetMapping
@@ -37,10 +43,20 @@ public class SpotifyDataController {
 
     @CrossOrigin(origins = "http://localhost:5173/")
     @PostMapping
-    public ResponseEntity<SpotifyDataEntity> createSpotifyData(@RequestBody SpotifyDataEntity spotifyData) {
+    public ResponseEntity<SpotifyDataEntity> createSpotifyData(@RequestBody SpotifyDataDto spotifyDataDto) {
         try {
-            SpotifyDataEntity _spotifyData = spotifyDataRepository.save(spotifyData);
-            return new ResponseEntity<>(_spotifyData, HttpStatus.CREATED);
+            Optional<UsersEntity> user = usersRepository.findById(spotifyDataDto.getUserId());
+
+            if (user.isPresent()) {
+                SpotifyDataEntity spotifyData = new SpotifyDataEntity();
+                spotifyData.setSpotifyUsername(spotifyDataDto.getSpotifyUsername());
+                spotifyData.setSpotifyEmail(spotifyDataDto.getSpotifyEmail());
+                spotifyData.setUserId(user.get());
+                SpotifyDataEntity _spotifyData = spotifyDataRepository.save(spotifyData);
+                return new ResponseEntity<>(_spotifyData, HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -84,6 +100,18 @@ public class SpotifyDataController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173/")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<SpotifyDataEntity>> getSpotifyDataByUserId(@PathVariable("userId") int userId) {
+        List<SpotifyDataEntity> spotifyDataList = spotifyDataRepository.findSpotifyDataByUserId(userId);
+
+        if (!spotifyDataList.isEmpty()) {
+            return new ResponseEntity<>(spotifyDataList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
