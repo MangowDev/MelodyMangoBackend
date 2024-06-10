@@ -17,3 +17,4 @@ public interface FriendshipsRepository extends CrudRepository<FriendshipsEntity,
     @Query("SELECT f FROM FriendshipsEntity f WHERE f.user1.userId = :userId OR f.user2.userId = :userId")
     List<FriendshipsEntity> findFriendshipsByUserId(int userId);
 }
+

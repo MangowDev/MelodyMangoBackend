@@ -51,6 +51,7 @@ public class SpotifyDataController {
                 SpotifyDataEntity spotifyData = new SpotifyDataEntity();
                 spotifyData.setSpotifyUsername(spotifyDataDto.getSpotifyUsername());
                 spotifyData.setSpotifyEmail(spotifyDataDto.getSpotifyEmail());
+                spotifyData.setSpotifyImage(spotifyDataDto.getSpotifyImage());
                 spotifyData.setUserId(user.get());
                 SpotifyDataEntity _spotifyData = spotifyDataRepository.save(spotifyData);
                 return new ResponseEntity<>(_spotifyData, HttpStatus.CREATED);
@@ -75,6 +76,9 @@ public class SpotifyDataController {
             }
             if (spotifyData.getSpotifyEmail() != null) {
                 _spotifyData.setSpotifyEmail(spotifyData.getSpotifyEmail());
+            }
+            if (spotifyData.getSpotifyImage() != null) {
+                _spotifyData.setSpotifyImage(spotifyData.getSpotifyImage());
             }
             if (spotifyData.getSpotifyToken() != null) {
                 _spotifyData.setSpotifyToken(spotifyData.getSpotifyToken());

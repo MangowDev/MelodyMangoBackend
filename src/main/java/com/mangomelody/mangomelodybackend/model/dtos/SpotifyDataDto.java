@@ -6,6 +6,14 @@ public class SpotifyDataDto {
     private int userId;
     private String spotifyUsername;
     private String spotifyEmail;
+    private String spotifyImage;
+    public String getSpotifyImage() {
+        return spotifyImage;
+    }
+
+    public void setSpotifyImage(String spotifyImage) {
+        this.spotifyImage = spotifyImage;
+    }
 
     public int getUserId() {
         return userId;

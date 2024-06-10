@@ -91,14 +91,8 @@ public class UsersController {
             if (user.getPassword() != null) {
                 _user.setPassword(user.getPassword());
             }
-            if (user.getUserRole() != null) {
-                _user.setUserRole(user.getUserRole());
-            }
-            if (user.getSpotifyToken() != null) {
-                _user.setSpotifyToken(user.getSpotifyToken());
-            }
-            if (user.getRefreshToken() != null) {
-                _user.setRefreshToken(user.getRefreshToken());
+            if (user.getProfileState() != null) {
+                _user.setProfileState(user.getProfileState());
             }
 
             return new ResponseEntity<>(usersRepository.save(_user), HttpStatus.OK);
@@ -123,14 +117,8 @@ public class UsersController {
             if (user.getPassword() != null) {
                 userData.setPassword(user.getPassword());
             }
-            if (user.getUserRole() != null) {
-                userData.setUserRole(user.getUserRole());
-            }
-            if (user.getSpotifyToken() != null) {
-                userData.setSpotifyToken(user.getSpotifyToken());
-            }
-            if (user.getRefreshToken() != null) {
-                userData.setRefreshToken(user.getRefreshToken());
+            if (user.getProfileState() != null) {
+                userData.setProfileState(user.getProfileState());
             }
 
             return new ResponseEntity<>(usersRepository.save(userData), HttpStatus.OK);
@@ -150,55 +138,4 @@ public class UsersController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:5173/")
-    @PutMapping("/username/{username}/refresh-token")
-    public ResponseEntity<UsersEntity> refreshSpotifyToken(@PathVariable("username") String username) {
-        UsersEntity userData = usersRepository.findByUsername(username);
-
-        if (userData != null) {
-            String newAccessToken = requestNewAccessToken(userData.getRefreshToken());
-
-            if (newAccessToken != null) {
-                userData.setSpotifyToken(newAccessToken);
-                return new ResponseEntity<>(usersRepository.save(userData), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    // Métodos auxiliares para manejar el token de Spotify
-
-    private String extractAccessTokenFromResponse(String responseBody) throws JSONException {
-        JSONObject jsonObject = new JSONObject(responseBody);
-        return jsonObject.getString("access_token");
-    }
-
-    private String requestNewAccessToken(String refreshToken) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("f9687dfd6adc42c4b9422bcb7d1f9d41", "c8b34fe86d47495bbf38acbbb48b6a48");
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("grant_type", "refresh_token");
-        map.add("refresh_token", refreshToken);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange("https://accounts.spotify.com/api/token", HttpMethod.POST, request, String.class);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            try {
-                return extractAccessTokenFromResponse(response.getBody());
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
 }

@@ -27,9 +27,13 @@ public class SpotifyDataEntity {
     @Email
     @NotBlank(message = "The Spotify email can't be empty")
     @NotNull
-    @Size(min = 1, max = 100, message = "The Spotify email can't be longer than 100 characters")
-    @Column(name = "spotify_email", nullable = false, unique = true, length = 100)
+    @Size(min = 1, max = 150, message = "The Spotify email can't be longer than 100 characters")
+    @Column(name = "spotify_email", nullable = false, unique = true, length = 150)
     private String spotifyEmail;
+
+    @Size(min = 1, max = 255, message = "The Spotify image can't be longer than 255 characters")
+    @Column(name = "spotify_image", nullable = true, length = 255)
+    private String spotifyImage;
 
     @Size(max = 255, message = "The Spotify token can't be longer than 255 characters")
     @Column(name = "spotify_token", length = 255)
@@ -68,6 +72,15 @@ public class SpotifyDataEntity {
         this.spotifyEmail = spotifyEmail;
     }
 
+    public String getSpotifyImage() {
+        return spotifyImage;
+    }
+
+    public void setSpotifyImage(String spotifyImage) {
+        this.spotifyImage = spotifyImage;
+    }
+
+
     public String getSpotifyToken() {
         return spotifyToken;
     }
@@ -101,6 +114,7 @@ public class SpotifyDataEntity {
         return Objects.equals(dataId, that.dataId) &&
                 Objects.equals(spotifyUsername, that.spotifyUsername) &&
                 Objects.equals(spotifyEmail, that.spotifyEmail) &&
+                Objects.equals(spotifyImage, that.spotifyImage) &&
                 Objects.equals(spotifyToken, that.spotifyToken) &&
                 Objects.equals(refreshToken, that.refreshToken) &&
                 Objects.equals(userId, that.userId);
@@ -108,6 +122,6 @@ public class SpotifyDataEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(dataId, spotifyUsername, spotifyEmail, spotifyToken, refreshToken, userId);
+        return Objects.hash(dataId, spotifyUsername, spotifyEmail, spotifyImage, spotifyToken, refreshToken, userId);
     }
 }

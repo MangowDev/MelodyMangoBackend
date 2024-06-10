@@ -1,6 +1,6 @@
 package com.mangomelody.mangomelodybackend.model.entities;
 
-import com.mangomelody.mangomelodybackend.model.entities.roles.UserRole;
+import com.mangomelody.mangomelodybackend.model.entities.roles.ProfileState;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,8 +20,8 @@ public class UsersEntity {
     @Basic
     @NotBlank(message = "The username can't be empty")
     @NotNull
-    @Size(min = 1, max = 30, message = "The username can't be longer than 30 characters")
-    @Column(name = "username", nullable = false, length = 30)
+    @Size(min = 1, max = 50, message = "The username can't be longer than 30 characters")
+    @Column(name = "username", nullable = false, length = 50)
     private String username;
 
     @Basic
@@ -34,22 +34,14 @@ public class UsersEntity {
     @Email
     @NotNull
     @NotBlank(message = "The email can't be empty")
-    @Size(min = 1, max = 50, message = "The email can't be longer than 50 characters")
-    @Column(name = "email", nullable = false, length = 50)
+    @Size(min = 1, max = 100, message = "The email can't be longer than 50 characters")
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(name = "user_role", nullable = false)
-    private UserRole userRole = UserRole.USER;
-
-    @Basic
-    @Column(name = "spotify_token", length = 255, nullable = true)
-    private String spotifyToken;
-
-    @Basic
-    @Column(name = "refresh_token", length = 255, nullable = true)
-    private String refreshToken;
+    @Column(name = "profile_state", nullable = false)
+    private ProfileState profileState = ProfileState.PUBLIC;
 
     public int getUserId() {
         return userId;
@@ -83,28 +75,12 @@ public class UsersEntity {
         this.email = email;
     }
 
-    public UserRole getUserRole() {
-        return userRole;
+    public ProfileState getProfileState() {
+        return profileState;
     }
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
-
-    public String getSpotifyToken() {
-        return spotifyToken;
-    }
-
-    public void setSpotifyToken(String spotifyToken) {
-        this.spotifyToken = spotifyToken;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void setProfileState(ProfileState profileState) {
+        this.profileState = profileState;
     }
 
     @Override
@@ -112,11 +88,11 @@ public class UsersEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UsersEntity that = (UsersEntity) o;
-        return userId == that.userId && Objects.equals(username, that.username) && Objects.equals(password, that.password) && Objects.equals(email, that.email) && Objects.equals(spotifyToken, that.spotifyToken) && userRole == that.userRole;
+        return userId == that.userId && Objects.equals(username, that.username) && Objects.equals(password, that.password) && Objects.equals(email, that.email) && profileState == that.profileState;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, password, email, spotifyToken, userRole);
+        return Objects.hash(userId, username, password, email, profileState);
     }
 }

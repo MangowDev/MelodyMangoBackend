@@ -24,12 +24,14 @@ public class FriendshipsController {
     private UsersRepository usersRepository;
 
     // Obtener todas las relaciones de amistad
+    @CrossOrigin(origins = "http://localhost:5173/")
     @GetMapping
     public List<FriendshipsEntity> getAllFriendships() {
         return (List<FriendshipsEntity>) friendshipsRepository.findAll();
     }
 
     // Obtener una relación de amistad por su id
+    @CrossOrigin(origins = "http://localhost:5173/")
     @GetMapping("/{friendshipId}")
     public ResponseEntity<FriendshipsEntity> getFriendshipById(@PathVariable("friendshipId") int friendshipId) {
         Optional<FriendshipsEntity> friendshipData = friendshipsRepository.findById(friendshipId);
@@ -42,6 +44,7 @@ public class FriendshipsController {
     }
 
     // Crear una nueva relación de amistad usando DTO
+    @CrossOrigin(origins = "http://localhost:5173/")
     @PostMapping
     public ResponseEntity<FriendshipsEntity> createFriendship(@RequestBody FriendshipsDto friendshipsDto) {
         try {
@@ -64,6 +67,7 @@ public class FriendshipsController {
     }
 
     // Actualizar el estado de una relación de amistad por su id
+    @CrossOrigin(origins = "http://localhost:5173/")
     @PutMapping("/{friendshipId}")
     public ResponseEntity<FriendshipsEntity> updateFriendshipStatus(
             @PathVariable("friendshipId") int friendshipId,
@@ -80,6 +84,7 @@ public class FriendshipsController {
     }
 
     // Eliminar una relación de amistad por su id
+    @CrossOrigin(origins = "http://localhost:5173/")
     @DeleteMapping("/{friendshipId}")
     public ResponseEntity<HttpStatus> deleteFriendship(@PathVariable("friendshipId") int friendshipId) {
         try {
@@ -90,7 +95,29 @@ public class FriendshipsController {
         }
     }
 
+    // Obtener los datos de una relación de amistad entre dos usuarios
+    @CrossOrigin(origins = "http://localhost:5173/")
+    @GetMapping("/details")
+    public ResponseEntity<FriendshipsEntity> getFriendshipDetails(
+            @RequestParam("user1Id") int user1Id,
+            @RequestParam("user2Id") int user2Id) {
+        Optional<UsersEntity> user1 = usersRepository.findById(user1Id);
+        Optional<UsersEntity> user2 = usersRepository.findById(user2Id);
+
+        if (user1.isPresent() && user2.isPresent()) {
+            Optional<FriendshipsEntity> friendship = friendshipsRepository.findFriendshipBetweenUsers(user1.get(), user2.get());
+            if (friendship.isPresent()) {
+                return new ResponseEntity<>(friendship.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     // Verificar si existe una relación de amistad entre dos usuarios
+    @CrossOrigin(origins = "http://localhost:5173/")
     @GetMapping("/exists")
     public ResponseEntity<Boolean> friendshipExists(
             @RequestParam("user1Id") int user1Id,
@@ -107,6 +134,7 @@ public class FriendshipsController {
     }
 
     // Obtener todas las relaciones de amistad que involucren a un usuario específico
+    @CrossOrigin(origins = "http://localhost:5173/")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FriendshipsEntity>> getFriendshipsByUserId(@PathVariable("userId") int userId) {
         try {

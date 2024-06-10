@@ -14,6 +14,5 @@ public interface UsersRepository extends CrudRepository<UsersEntity, Integer> {
 
     @Query("SELECT u FROM UsersEntity u WHERE u.username LIKE %:username%")
     List<UsersEntity> findByUsernameContaining(@Param("username") String username);
-
-
 }
+

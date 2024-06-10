@@ -17,3 +17,4 @@ public interface SpotifyDataRepository extends CrudRepository<SpotifyDataEntity,
     List<SpotifyDataEntity> findSpotifyDataByUserId(int userId);
 
 }
+
